@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Symitar &middot; Projections</title>
+<style>
+/* ==========================================================================
+   Design tokens (extracted from Figma: SYMITAR-MODULES, node 3:471)
+   ========================================================================== */
+:root {
+  --color-page-bg: #f4f5f7;
+  --color-sidebar-bg: #1a2035;
+  --color-sidebar-icon-hover: rgba(255, 255, 255, 0.1);
+  --color-sidebar-icon-active: rgba(255, 255, 255, 0.2);
+  --color-sidebar-avatar-bg: #45556c;
+  --color-nav-inactive-text: #cad5e2;
+
+  --color-white: #ffffff;
+  --color-border: #ebebeb;
+  --color-border-strong: #d7d7d7;
+  --color-row-alt: #f4f4f4;
+
+  --color-text-primary: #2c2c2c;
+  --color-text-secondary: #636363;
+  --color-text-placeholder: #afafaf;
+
+  --color-primary: #085ce5;
+  --color-primary-border: #ecf5fe;
+  --color-primary-hover: #0748b8;
+  --color-danger: #ff6467;
+  --color-check-blue: #0075ff;
+  --color-highlight-bg: #fff3c4;
+  --color-highlight-border: #f5d90a;
+
+  --radius-card: 14px;
+  --radius-control: 8px;
+  --radius-button: 10px;
+  --radius-chip: 4px;
+  --radius-pill: 999px;
+
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+
+  --shadow-card: 0px 1px 1.5px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-page-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+button {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+svg {
+  display: block;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.icon img,
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* --- Left dark icon rail --- */
+.icon-rail {
+  width: 48px;
+  flex-shrink: 0;
+  background: var(--color-sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 6px;
+  min-height: 100vh;
+}
+
+.icon-rail__logo {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-chip);
+  margin-bottom: 16px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: -0.3px;
+}
+
+.icon-rail__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.icon-rail__spacer {
+  flex: 1;
+}
+
+.icon-rail__btn {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-chip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.icon-rail__btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-rail__btn:hover {
+  background: var(--color-sidebar-icon-hover);
+}
+
+.icon-rail__btn.is-active {
+  background: var(--color-sidebar-icon-active);
+}
+
+.icon-rail__btn.is-round {
+  border-radius: var(--radius-pill);
+  background: var(--color-sidebar-avatar-bg);
+  overflow: hidden;
+}
+
+.icon-rail__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* --- Right column: header + page --- */
+.main-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  background: var(--color-sidebar-bg);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.topbar__brand .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.topbar__brand-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.topbar__nav-item {
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-chip);
+  padding: 6px 12px;
+  color: var(--color-nav-inactive-text);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.15px;
+  white-space: nowrap;
+}
+
+.topbar__nav-item.is-active {
+  color: #fff;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.topbar__icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-chip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.topbar__icon-btn.is-active {
+  background: var(--color-sidebar-icon-active);
+}
+
+/* --- Page --- */
+.page {
+  flex: 1;
+  padding: 32px 32px 48px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.content-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* --- Route sidebar (left card nav) --- */
+.route-sidebar {
+  width: 208px;
+  flex-shrink: 0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.route-sidebar__item {
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.route-sidebar__item + .route-sidebar__item {
+  margin-top: 4px;
+}
+
+.route-sidebar__item.is-active {
+  background: var(--color-row-alt);
+}
+
+.route-sidebar__item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: -0.15px;
+}
+
+.route-sidebar__item.is-active .route-sidebar__item-title {
+  color: var(--color-text-primary);
+}
+
+.route-sidebar__item-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+/* --- Main content column --- */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Panel (card) shared styles
+   ========================================================================== */
+.panel {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.panel + .panel {
+  margin-top: 16px;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 13px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panel__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.15px;
+}
+
+.panel__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel__body {
+  padding: 16px 20px;
+}
+
+.panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 17px 20px 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--radius-button);
+  border: 1px solid transparent;
+  padding: 9px 17px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 20px;
+}
+
+.btn-secondary {
+  background: var(--color-white);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+  background: var(--color-row-alt);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 8px 20px;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-primary:disabled {
+  background: #cbd5e1;
+  color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.btn-outline-blue {
+  background: var(--color-white);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
+  padding: 7px 13px;
+  font-size: 12px;
+  border-radius: var(--radius-button);
+}
+
+.btn-outline-blue:hover {
+  background: var(--color-primary-border);
+}
+
+.btn-small {
+  padding: 7px 13px;
+  font-size: 12px;
+  border-radius: var(--radius-button);
+}
+
+/* ==========================================================================
+   Form fields
+   ========================================================================== */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.field-grid--full {
+  grid-template-columns: 1fr;
+}
+
+.field-section + .field-section {
+  margin-top: 16px;
+}
+
+.field-section__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  margin: 0 0 12px;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field__label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.field__required {
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.field__lock-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+}
+
+.field__control-wrap {
+  position: relative;
+}
+
+.field__control {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: 9px 13px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  letter-spacing: -0.15px;
+}
+
+.field__control::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.field__control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(8, 92, 229, 0.12);
+}
+
+.field__control.has-icon-left {
+  padding-left: 33px;
+}
+
+.field__control.has-icon-right,
+select.field__control {
+  padding-right: 33px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.field__icon-left,
+.field__icon-right {
+  position: absolute;
+  top: 12px;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.field__icon-left {
+  left: 12px;
+}
+
+.field__icon-right {
+  right: 12px;
+}
+
+.field__control[readonly],
+.field__control.is-readonly,
+select.field__control:disabled {
+  background: var(--color-row-alt);
+  border: 1px dashed var(--color-border-strong);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.field__control.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.field__error {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--color-danger);
+}
+
+/* Combobox (searchable dropdown) */
+.combobox {
+  position: relative;
+}
+
+.combobox__list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+  display: none;
+}
+
+.combobox.is-open .combobox__list {
+  display: block;
+}
+
+.combobox__option {
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.combobox__option:hover,
+.combobox__option.is-highlighted {
+  background: var(--color-row-alt);
+}
+
+.combobox__empty {
+  padding: 10px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   Results panel
+   ========================================================================== */
+.results-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.results-narrative {
+  border-left: 2px solid rgba(8, 92, 229, 0.3);
+  padding-left: 14px;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0 0 16px;
+}
+
+.results-disclaimer {
+  border-left: 2px solid rgba(255, 100, 103, 0.4);
+  padding-left: 14px;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 19px;
+  margin: 0 0 16px;
+}
+
+.results-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background: var(--color-row-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 13px 17px;
+}
+
+.summary-card.is-highlighted {
+  background: var(--color-highlight-bg);
+  border-color: var(--color-highlight-border);
+}
+
+.summary-card__label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0 0 4px;
+}
+
+.summary-card__value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.results-section-heading {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 20px 0 12px;
+}
+
+.results-section-heading:first-child {
+  margin-top: 0;
+}
+
+.detail-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detail-list li span:first-child {
+  color: var(--color-text-secondary);
+}
+
+.detail-list li span:last-child {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.schedule-wrap {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.schedule-header {
+  background: var(--color-row-alt);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 16px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.3px;
+}
+
+.schedule-scroll {
+  max-height: 288px;
+  overflow-y: auto;
+}
+
+.schedule-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.schedule-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-row-alt);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.3px;
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.schedule-table thead th:last-child {
+  text-align: right;
+}
+
+.schedule-table tbody td {
+  padding: 9.5px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.schedule-table tbody td:last-child {
+  text-align: right;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.schedule-table tbody tr:nth-child(even) {
+  background: var(--color-row-alt);
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.checkbox-field input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  accent-color: var(--color-check-blue);
+  cursor: pointer;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 900px) {
+  .content-row {
+    flex-direction: column;
+  }
+  .route-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .route-sidebar__item {
+    width: calc(50% - 4px);
+  }
+}
+
+@media (max-width: 640px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+  .page {
+    padding: 16px;
+  }
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+@media print {
+  .icon-rail,
+  .topbar,
+  .route-sidebar,
+  .panel.input-panel,
+  .panel__header-actions {
+    display: none !important;
+  }
+  .page {
+    padding: 0;
+    max-width: none;
+  }
+  .panel {
+    box-shadow: none;
+    border: none;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Left dark icon rail -->
+    <aside class="icon-rail">
+      <div class="icon-rail__logo">jh</div>
+      <div class="icon-rail__group">
+        <button class="icon-rail__btn" type="button" title="Documents" data-icon="navDocument"></button>
+        <button class="icon-rail__btn" type="button" title="Search" data-icon="navSearch"></button>
+        <button class="icon-rail__btn" type="button" title="Members" data-icon="navPeople"></button>
+        <button class="icon-rail__btn" type="button" title="Home" data-icon="navHome"></button>
+        <button class="icon-rail__btn" type="button" title="Reports" data-icon="navBarchart"></button>
+        <button class="icon-rail__btn is-active" type="button" title="Projections" data-icon="navCalculator"></button>
+        <button class="icon-rail__btn" type="button" title="Accounts" data-icon="navDollar"></button>
+        <button class="icon-rail__btn" type="button" title="Cards" data-icon="navCreditcard"></button>
+      </div>
+      <div class="icon-rail__bottom">
+        <button class="icon-rail__btn" type="button" title="Dark mode" data-icon="navMoon"></button>
+        <button class="icon-rail__btn is-round" type="button" title="Profile" data-icon="navAvatar"></button>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <!-- Top header -->
+      <header class="topbar">
+        <div class="topbar__brand">
+          <span class="icon" style="width:22px;height:22px;" data-icon="headerLogo"></span>
+          <span class="topbar__brand-name">Symitar</span>
+        </div>
+        <nav class="topbar__nav">
+          <button class="topbar__nav-item" type="button">Verification</button>
+          <button class="topbar__nav-item" type="button">Non-Member Verification</button>
+          <button class="topbar__nav-item" type="button">Collection Queue</button>
+        </nav>
+        <div class="topbar__actions">
+          <button class="topbar__icon-btn" type="button" title="Search" data-icon="headerSearch"></button>
+          <button class="topbar__icon-btn is-active" type="button" title="Settings" data-icon="headerSettings"></button>
+          <button class="topbar__icon-btn" type="button" title="Help" data-icon="headerHelp"></button>
+        </div>
+      </header>
+
+      <!-- Page -->
+      <main class="page">
+        <div class="page-header">
+          <h1>Projections</h1>
+          <p>Calculate loan payments, IRA balances, dividend schedules, and APY estimates.</p>
+        </div>
+
+        <div class="content-row">
+          <nav class="route-sidebar" id="routeSidebar"></nav>
+
+          <div class="main-content">
+            <section class="panel input-panel" id="inputPanel"></section>
+            <section class="panel results-panel" id="resultsPanel"></section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+<script>
+// ============================================================================
+// Inline icon library (extracted from Figma) — avoids any external file
+// requests so this document works as a single, portable, double-clickable file.
+// ============================================================================
+const ICONS = {
+navDocument: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 1.33333H4C3.64638 1.33333 3.30724 1.47381 3.05719 1.72386C2.80714 1.97391 2.66667 2.31304 2.66667 2.66667V13.3333C2.66667 13.687 2.80714 14.0261 3.05719 14.2761C3.30724 14.5262 3.64638 14.6667 4 14.6667H12C12.3536 14.6667 12.6928 14.5262 12.9428 14.2761C13.1929 14.0261 13.3333 13.687 13.3333 13.3333V4.66667L10 1.33333Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.33333 1.33333V4C9.33333 4.35362 9.47381 4.69276 9.72386 4.94281C9.97391 5.19286 10.313 5.33333 10.6667 5.33333H13.3333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.66667 6H5.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 8.66667H5.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 11.3333H5.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navSearch: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 14L11.1333 11.1333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navPeople: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.6667 14V12.6667C10.6667 11.9594 10.3857 11.2811 9.88562 10.781C9.38552 10.281 8.70724 10 8 10H4C3.29276 10 2.61448 10.281 2.11438 10.781C1.61428 11.2811 1.33333 11.9594 1.33333 12.6667V14" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 7.33333C7.47276 7.33333 8.66667 6.13943 8.66667 4.66667C8.66667 3.19391 7.47276 2 6 2C4.52724 2 3.33333 3.19391 3.33333 4.66667C3.33333 6.13943 4.52724 7.33333 6 7.33333Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.6667 14V12.6667C14.6662 12.0758 14.4696 11.5018 14.1076 11.0349C13.7456 10.5679 13.2388 10.2344 12.6667 10.0867" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 2.08667C11.2403 2.23353 11.7487 2.56713 12.1118 3.03487C12.4748 3.50261 12.6719 4.07789 12.6719 4.67C12.6719 5.26211 12.4748 5.83739 12.1118 6.30513C11.7487 6.77287 11.2403 7.10647 10.6667 7.25333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navHome: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 14V8.66667C10 8.48986 9.92976 8.32029 9.80474 8.19526C9.67971 8.07024 9.51014 8 9.33333 8H6.66667C6.48986 8 6.32029 8.07024 6.19526 8.19526C6.07024 8.32029 6 8.48986 6 8.66667V14" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 6.66667C1.99995 6.47271 2.04222 6.28108 2.12386 6.10514C2.20549 5.92921 2.32453 5.7732 2.47267 5.648L7.13933 1.64867C7.37999 1.44527 7.6849 1.33368 8 1.33368C8.3151 1.33368 8.62001 1.44527 8.86067 1.64867L13.5273 5.648C13.6755 5.7732 13.7945 5.92921 13.8761 6.10514C13.9578 6.28108 14 6.47271 14 6.66667V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V6.66667Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navBarchart: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13.3333V6.66667" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13.3333V2.66667" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 13.3333V9.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navCalculator: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.33333H4C3.26362 1.33333 2.66667 1.93029 2.66667 2.66667V13.3333C2.66667 14.0697 3.26362 14.6667 4 14.6667H12C12.7364 14.6667 13.3333 14.0697 13.3333 13.3333V2.66667C13.3333 1.93029 12.7364 1.33333 12 1.33333Z" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.33333 4H10.6667" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 9.33333V12" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 6.66667H10.6733" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6.66667H8.00667" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.33333 6.66667H5.34" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 9.33333H8.00667" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.33333 9.33333H5.34" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12H8.00667" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.33333 12H5.34" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navDollar: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.66667 1.33333V14.6667L4 14L5.33333 14.6667L6.66667 14L8 14.6667L9.33333 14L10.6667 14.6667L12 14L13.3333 14.6667V1.33333L12 2L10.6667 1.33333L9.33333 2L8 1.33333L6.66667 2L5.33333 1.33333L4 2L2.66667 1.33333Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.6667 5.33333H6.66667C6.31304 5.33333 5.97391 5.47381 5.72386 5.72386C5.47381 5.97391 5.33333 6.31304 5.33333 6.66667C5.33333 7.02029 5.47381 7.35943 5.72386 7.60948C5.97391 7.85952 6.31304 8 6.66667 8H9.33333C9.68696 8 10.0261 8.14048 10.2761 8.39052C10.5262 8.64057 10.6667 8.97971 10.6667 9.33333C10.6667 9.68696 10.5262 10.0261 10.2761 10.2761C10.0261 10.5262 9.68696 10.6667 9.33333 10.6667H5.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.6667V4.33333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navCreditcard: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3333 3.33333H2.66667C1.93029 3.33333 1.33333 3.93029 1.33333 4.66667V11.3333C1.33333 12.0697 1.93029 12.6667 2.66667 12.6667H13.3333C14.0697 12.6667 14.6667 12.0697 14.6667 11.3333V4.66667C14.6667 3.93029 14.0697 3.33333 13.3333 3.33333Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.33333 6.66667H14.6667" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navMoon: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2C7.20435 2.79565 6.75736 3.87478 6.75736 5C6.75736 6.12522 7.20435 7.20435 8 8C8.79565 8.79565 9.87478 9.24264 11 9.24264C12.1252 9.24264 13.2044 8.79565 14 8C14 9.18669 13.6481 10.3467 12.9888 11.3334C12.3295 12.3201 11.3925 13.0892 10.2961 13.5433C9.19974 13.9974 7.99334 14.1162 6.82946 13.8847C5.66557 13.6532 4.59647 13.0818 3.75736 12.2426C2.91824 11.4035 2.3468 10.3344 2.11529 9.17054C1.88378 8.00666 2.0026 6.80026 2.45672 5.7039C2.91085 4.60754 3.67988 3.67047 4.66658 3.01118C5.65327 2.35189 6.81331 2 8 2Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+navAvatar: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6667 14V12.6667C12.6667 11.9594 12.3857 11.2811 11.8856 10.781C11.3855 10.281 10.7072 10 10 10H6C5.29276 10 4.61448 10.281 4.11438 10.781C3.61428 11.2811 3.33333 11.9594 3.33333 12.6667V14" stroke="#CAD5E2" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 7.33333C9.47276 7.33333 10.6667 6.13943 10.6667 4.66667C10.6667 3.19391 9.47276 2 8 2C6.52724 2 5.33333 3.19391 5.33333 4.66667C5.33333 6.13943 6.52724 7.33333 8 7.33333Z" stroke="#CAD5E2" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+headerLogo: '<svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.7" d="M2.2 4.4L11 11L2.2 17.6V4.4Z" fill="#2563EB"/><path d="M7.7 4.4L16.5 11L7.7 17.6V4.4Z" fill="#3B82F6"/><path opacity="0.85" d="M13.2 4.4L22 11L13.2 17.6V4.4Z" fill="#60A5FA"/></svg>',
+headerSearch: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 14L11.1333 11.1333" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+headerSettings: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14667 1.33333H7.85333C7.49971 1.33333 7.16057 1.47381 6.91052 1.72386C6.66048 1.97391 6.52 2.31304 6.52 2.66667V2.78667C6.51976 3.02048 6.45804 3.25013 6.34103 3.45256C6.22401 3.65499 6.05582 3.82309 5.85333 3.94L5.56667 4.10667C5.36397 4.22369 5.13405 4.2853 4.9 4.2853C4.66595 4.2853 4.43603 4.22369 4.23333 4.10667L4.13333 4.05333C3.82738 3.87684 3.46389 3.82896 3.12267 3.92021C2.78144 4.01145 2.49037 4.23436 2.31333 4.54L2.16667 4.79333C1.99018 5.09929 1.9423 5.46278 2.03354 5.804C2.12478 6.14522 2.34769 6.4363 2.65333 6.61333L2.75333 6.68C2.95485 6.79634 3.12241 6.96339 3.23937 7.16455C3.35632 7.36572 3.4186 7.59398 3.42 7.82667V8.16667C3.42093 8.40161 3.35977 8.63264 3.2427 8.83634C3.12562 9.04004 2.95681 9.20919 2.75333 9.32667L2.65333 9.38667C2.34769 9.5637 2.12478 9.85478 2.03354 10.196C1.9423 10.5372 1.99018 10.9007 2.16667 11.2067L2.31333 11.46C2.49037 11.7656 2.78144 11.9886 3.12267 12.0798C3.46389 12.171 3.82738 12.1232 4.13333 11.9467L4.23333 11.8933C4.43603 11.7763 4.66595 11.7147 4.9 11.7147C5.13405 11.7147 5.36397 11.7763 5.56667 11.8933L5.85333 12.06C6.05582 12.1769 6.22401 12.345 6.34103 12.5474C6.45804 12.7499 6.51976 12.9795 6.52 13.2133V13.3333C6.52 13.687 6.66048 14.0261 6.91052 14.2761C7.16057 14.5262 7.49971 14.6667 7.85333 14.6667H8.14667C8.50029 14.6667 8.83943 14.5262 9.08948 14.2761C9.33952 14.0261 9.48 13.687 9.48 13.3333V13.2133C9.48024 12.9795 9.54196 12.7499 9.65897 12.5474C9.77599 12.345 9.94418 12.1769 10.1467 12.06L10.4333 11.8933C10.636 11.7763 10.866 11.7147 11.1 11.7147C11.334 11.7147 11.564 11.7763 11.7667 11.8933L11.8667 11.9467C12.1726 12.1232 12.5361 12.171 12.8773 12.0798C13.2186 11.9886 13.5096 11.7656 13.6867 11.46L13.8333 11.2C14.0098 10.894 14.0577 10.5306 13.9665 10.1893C13.8752 9.84811 13.6523 9.55703 13.3467 9.38L13.2467 9.32667C13.0432 9.20919 12.8744 9.04004 12.7573 8.83634C12.6402 8.63264 12.5791 8.40161 12.58 8.16667V7.83333C12.5791 7.59839 12.6402 7.36736 12.7573 7.16366C12.8744 6.95996 13.0432 6.79081 13.2467 6.67333L13.3467 6.61333C13.6523 6.4363 13.8752 6.14522 13.9665 5.804C14.0577 5.46278 14.0098 5.09929 13.8333 4.79333L13.6867 4.54C13.5096 4.23436 13.2186 4.01145 12.8773 3.92021C12.5361 3.82896 12.1726 3.87684 11.8667 4.05333L11.7667 4.10667C11.564 4.22369 11.334 4.2853 11.1 4.2853C10.866 4.2853 10.636 4.22369 10.4333 4.10667L10.1467 3.94C9.94418 3.82309 9.77599 3.65499 9.65897 3.45256C9.54196 3.25013 9.48024 3.02048 9.48 2.78667V2.66667C9.48 2.31304 9.33952 1.97391 9.08948 1.72386C8.83943 1.47381 8.50029 1.33333 8.14667 1.33333Z" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+headerHelp: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 14.6667C11.6819 14.6667 14.6667 11.6819 14.6667 8C14.6667 4.3181 11.6819 1.33333 8 1.33333C4.3181 1.33333 1.33333 4.3181 1.33333 8C1.33333 11.6819 4.3181 14.6667 8 14.6667Z" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.06 6C6.21674 5.55445 6.5261 5.17874 6.9333 4.93942C7.3405 4.70011 7.81926 4.61263 8.28478 4.69247C8.7503 4.77232 9.17254 5.01435 9.47672 5.37569C9.78089 5.73702 9.94737 6.19435 9.94667 6.66667C9.94667 8 7.94667 8.66667 7.94667 8.66667" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.3333H8.00667" stroke="#90A1B9" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+fieldSearch: '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.41667 11.0833C8.994 11.0833 11.0833 8.994 11.0833 6.41667C11.0833 3.83934 8.994 1.75 6.41667 1.75C3.83934 1.75 1.75 3.83934 1.75 6.41667C1.75 8.994 3.83934 11.0833 6.41667 11.0833Z" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.25 12.25L9.74167 9.74167" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+fieldChevron: '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 5.25L7 8.75L10.5 5.25" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+fieldLock: '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 5.5H2.5C1.94772 5.5 1.5 5.94772 1.5 6.5V10C1.5 10.5523 1.94772 11 2.5 11H9.5C10.0523 11 10.5 10.5523 10.5 10V6.5C10.5 5.94772 10.0523 5.5 9.5 5.5Z" stroke="#AFAFAF" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 5.5V3.5C3.5 2.83696 3.76339 2.20107 4.23223 1.73223C4.70107 1.26339 5.33696 1 6 1C6.66304 1 7.29893 1.26339 7.76777 1.73223C8.23661 2.20107 8.5 2.83696 8.5 3.5V5.5" stroke="#AFAFAF" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+print: '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 10.5H2.33333C2.02391 10.5 1.72717 10.3771 1.50838 10.1583C1.28958 9.9395 1.16667 9.64275 1.16667 9.33333V6.41667C1.16667 6.10725 1.28958 5.8105 1.50838 5.59171C1.72717 5.37292 2.02391 5.25 2.33333 5.25H11.6667C11.9761 5.25 12.2728 5.37292 12.4916 5.59171C12.7104 5.8105 12.8333 6.10725 12.8333 6.41667V9.33333C12.8333 9.64275 12.7104 9.9395 12.4916 10.1583C12.2728 10.3771 11.9761 10.5 11.6667 10.5H10.5" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 5.25V1.75C3.5 1.59529 3.56146 1.44692 3.67085 1.33752C3.78025 1.22812 3.92862 1.16667 4.08333 1.16667H9.91667C10.0714 1.16667 10.2197 1.22812 10.3291 1.33752C10.4385 1.44692 10.5 1.59529 10.5 1.75V5.25" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.91667 8.16667H4.08333C3.76117 8.16667 3.5 8.42783 3.5 8.75V12.25C3.5 12.5722 3.76117 12.8333 4.08333 12.8333H9.91667C10.2388 12.8333 10.5 12.5722 10.5 12.25V8.75C10.5 8.42783 10.2388 8.16667 9.91667 8.16667Z" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+// Populate every static [data-icon] placeholder in the shell. If the host
+// element doesn't already carry the ".icon" sizing class itself (e.g. it IS
+// an .icon span), stamp the class directly onto the injected <svg> root so
+// it gets constrained to 16x16 instead of the browser's default SVG size.
+document.querySelectorAll("[data-icon]").forEach((el) => {
+  const key = el.getAttribute("data-icon");
+  if (!ICONS[key]) return;
+  el.innerHTML = ICONS[key];
+  if (!el.classList.contains("icon")) {
+    const svg = el.querySelector("svg");
+    if (svg) svg.setAttribute("class", "icon");
+  }
+});
+
+// Builds an inline <svg> element (as an actual DOM node) from an ICONS entry,
+// with the given class applied directly to the <svg> root for CSS sizing.
+function svgIcon(key, className) {
+  const holder = document.createElement("div");
+  holder.innerHTML = ICONS[key];
+  const svg = holder.firstElementChild;
+  if (className) svg.setAttribute("class", className);
+  return svg;
+}
+</script>
+
+<script>
+// Shared dropdown option lists used across the Projections module.
+
+const LOAN_TYPES = [
+  "PERSONAL LOAN", "SIGNATURE LOAN", "REAL ESTATE", "LINE OF CREDIT", "AUTO LEASE",
+  "VEHICLE LOAN", "STUDENT LOAN", "COMMERCIAL LOAN", "AGRICULTURAL", "BOAT/RV LOAN",
+  "NEW VEHICLE", "NEW VEHICLE INDIRECT", "OTHER COLLATERAL LOANS", "USED VEHICLE",
+  "NEW BOAT & RV", "USED BOAT & RV", "NEW DIRT BIKE/ATV/JET SKI", "USED DIRT BIKE/ATV/JET SKI",
+  "SIGNATURE", "CLASSROOM LOAN", "HOSPITAL LOAN", "HELOC", "BALLOON SIGNATURE",
+  "VISA PLATINUM", "VISA PLATINUM SECURED", "VISA PLATINUM BUSINESS", "PIONEER PERKS",
+  "MEMBER BUSINESS AUTO", "BUSINESS LOC", "REAL ESTATE SECURED BUSINESS",
+  "CERTIFICATE SECURED", "INSURANCE SECURED", "SHARE SECURED LOAN"
+];
+
+const SHARE_TYPES = [
+  "PRIMARY SHARE", "BUSINESS SHARE", "NON PROFIT SHARE", "SECONDARY SHARE",
+  "SMART START SAVINGS", "SECURED SHARE", "SHARE DRAFT", "SECOND CHANCE SHARE DRAFT",
+  "BUSINESS SHARE DRAFT", "BUSINESS SWEEP SHARE DRAFT", "WORRY LESS CHECKING",
+  "NON PROFIT SHARE DRAFT", "3 MO JUMBO CERTIFICATE", "6 MO JUMBO CERTIFICATE",
+  "12 MO JUMBO CERTIFICATE", "18 MO JUMBO CERTIFICATE", "24 MO JUMBO CERTIFICATE",
+  "30 MO JUMBO CERTIFICATE", "36 MO JUMBO CERTIFICATE", "48 MO JUMBO CERTIFICATE",
+  "60 MO JUMBO CERTIFICATE", "MONEY MARKET", "MONEY MARKET ADVANTAGE",
+  "48 MONTH MOVING UP CERTIFICATE", "60 MONTH MOVING UP CERTIFICATE", "CHRISTMAS CLUB",
+  "VACATION CLUB", "INSERT NAME HERE", "3 MONTH CERTIFICATE", "6 MONTH CERTIFICATE",
+  "15 MONTH CERTIFICATE", "12 MONTH CERTIFICATE", "18 MONTH CERTIFICATE",
+  "25 MONTH CERTIFICATE", "24 MONTH CERTIFICATE", "30 MONTH CERTIFICATE",
+  "36 MONTH CERTIFICATE", "37 MONTH CERTIFICATE", "48 MONTH CERTIFICATE",
+  "60 MONTH CERTIFICATE", "61 MONTH CERTIFICATE", "14 MONTH CERTIFICATE",
+  "TRADITIONAL IRA", "ROTH IRA", "COVERDELL ESA", "3 MO JUMBO PLUS CERTIFICATE",
+  "36 MONTH TRADITIONAL IRA CERT", "48 MONTH TRADITIONAL IRA CERT",
+  "60 MONTH TRADITIONAL IRA CERT", "36 MONTH ROTH IRA CERTIFICATE",
+  "48 MONTH ROTH IRA CERTIFICATE", "60 MONTH ROTH IRA CERTIFICATE",
+  "6 MO JUMBO PLUS CERTIFICATE", "15 YR PREMIUM CERTIFICATE",
+  "12 MONTH TRADITIONAL IRA CERT", "24 MONTH TRADITIONAL IRA CERT",
+  "25 MONTH TRADITIONAL IRA CERT", "12 MONTH ROTH IRA CERTIFICATE",
+  "24 MONTH ROTH IRA CERTIFICATE", "25 MONTH ROTH IRA CERTIFICATE",
+  "SINGLE HSA", "FAMILY HSA", "15 MONTH JUMBO CERT", "15 MONTH JUMBO PLUS CERT",
+  "25 MONTH JUMBO CERT"
+];
+</script>
+
+<script>
+// Data dictionary for the 6 Projection routes, translated from the UI/UX spec.
+// Each route config drives formRenderer.js and resultsRenderer.js.
+
+function field(id, label, type, def, opts) {
+  return Object.assign(
+    { id, label, type, default: def, required: false, readOnly: false },
+    opts || {}
+  );
+}
+
+const DUE_DATE_ADVANCE_OPTIONS = ["0 Use Max Due Date Advance Period", "1 Use Fixed Due Date Advance Period"];
+
+const ROUTES = [
+  // ------------------------------------------------------------------ ROUTE 1
+  {
+    id: "loan",
+    navTitle: "Loan Projections",
+    navSubtitle: "Payments & terms",
+    title: "Loan Projections",
+    hasToggle: true,
+    secondaryDropdown: field("loanType", "Loan Type", "combobox", "", {
+      options: LOAN_TYPES,
+      placeholder: "— Search or select a loan type —"
+    }),
+    basicFields: [
+      field("calculation", "Calculation", "select", "0 Calculate Payment Amount", {
+        options: ["0 Calculate Payment Amount", "1 Calculate Loan Amount", "2 Calculate Number of Payments"]
+      }),
+      field("loanAmount", "Loan Amount", "currency", "0.00", {
+        required: true,
+        validationMsg: "Must add loan amount to calculate."
+      }),
+      field("loanMonths", "Loan Months", "text", "36"),
+      field("interestRate", "Interest Rate", "percent", "0.000%"),
+      field("payment", "Payment", "currency", "0.00", { readOnly: true, autoFillFrom: "standardPayment" }),
+      field("paymentFrequency", "Payment Frequency", "select", "04 Monthly", {
+        options: ["04 Monthly", "02 Bi-Weekly", "01 Weekly", "12 Annually", "03 Semi-Monthly"]
+      })
+    ],
+    advancedFields: [
+      field("interestType", "Interest Type", "select", "0000 Daily 365 day", {
+        options: ["0000 Daily 365 day", "0001 Daily 360 day", "0002 Simple Interest", "0003 Add-on Interest"]
+      }),
+      field("loanDate", "Loan Date", "date", "06/05/2026"),
+      field("paymentType", "Payment Type", "select", "0 Level Payment", {
+        options: ["0 Level Payment", "1 Balloon Payment", "2 Interest Only"]
+      }),
+      field("paymentCalcType", "Payment Calc Type", "select", "0 No Change", {
+        options: ["0 No Change", "1 Recalculate"]
+      }),
+      field("paymentSkips", "Payment Skips", "text", "0"),
+      field("paymentSkipStartDay", "Payment Skip Start Day", "text", "0"),
+      field("dueDay1", "Due Day 1", "text", "0"),
+      field("dueDay2", "Due Day 2", "text", "0"),
+      field("dueDate", "Due Date", "date", "_/_/_"),
+      field("loanMaturity", "Loan Maturity", "date", "_/_/_"),
+      field("dqCalculationMethod", "DQ Calculation Method", "select", "0 Payment buckets only contain changes", {
+        options: ["0 Payment buckets only contain changes", "1 Payment buckets contain full payment"]
+      }),
+      field("amortizationSchedule", "Amortization Schedule", "text", "0"),
+      field("amortizeSchdType", "Amortize Schd Type", "select", "0 Local", {
+        options: ["0 Local", "1 Regional", "2 National"]
+      }),
+      field("balloonDate", "Balloon Date", "date", "_/_/_"),
+      field("balloonAmount", "Balloon Amount", "currency", "0.00"),
+      field("escrowAmount", "Escrow Amount", "currency", "0.00"),
+      field("prepaidFinanceChg", "Prepaid Finance Chg", "currency", "0.00"),
+      field("maprPrepaidFinanceCharge", "MAPR Prepaid Finance Charge", "currency", "0.00"),
+      field("insuranceType", "Insurance Type", "text", "0"),
+      field("firstInsuredBirthDate", "First Insured Birth Date", "date", "_/_/_"),
+      field("secondInsuredBirthDate", "Second Insured Birth Date", "date", "_/_/_"),
+      field("dueDateAdvanceCode", "Due Date Advance Code", "select", "0 Use Max Due Date Advance Period", {
+        options: DUE_DATE_ADVANCE_OPTIONS
+      }),
+      field("militaryAPRLoan", "Military APR Loan", "text", "No")
+    ],
+    conditionalSection: {
+      label: "Auto Lease Details",
+      showWhen: { field: "loanType", equals: "AUTO LEASE" },
+      fields: [
+        field("salesTaxStateInd", "Sales Tax State Indicator", "select", "0", { options: ["0", "1", "2"] }),
+        field("salesTaxCountyInd", "Sales Tax County Indicator", "select", "0", { options: ["0", "1", "2"] }),
+        field("salesTaxCityInd", "Sales Tax City Indicator", "select", "0", { options: ["0", "1", "2"] }),
+        field("lesseeState", "Lessee State", "text", ""),
+        field("lesseeCounty", "Lessee County", "text", ""),
+        field("lesseeCity", "Lessee City", "text", ""),
+        field("dealerState", "Dealer State", "text", ""),
+        field("dealerCounty", "Dealer County", "text", ""),
+        field("dealerCity", "Dealer City", "text", ""),
+        field("fixedLesseeStateTaxRate", "Fixed Lessee State Tax Rate", "percent", "0.000%"),
+        field("fixedLesseeCountyTaxRate", "Fixed Lessee County Tax Rate", "percent", "0.000%"),
+        field("fixedLesseeCityTaxRate", "Fixed Lessee City Tax Rate", "percent", "0.000%"),
+        field("fixedDealerStateTaxRate", "Fixed Dealer State Tax Rate", "percent", "0.000%"),
+        field("fixedDealerCountyTaxRate", "Fixed Dealer County Tax Rate", "percent", "0.000%"),
+        field("fixedDealerCityTaxRate", "Fixed Dealer City Tax Rate", "percent", "0.000%"),
+        field("leaseTerminationDate", "Lease Termination Date", "date", "MM/DD/YYYY"),
+        field("leaseDispositionDate", "Lease Disposition Date", "date", "MM/DD/YYYY"),
+        field("leaseTerminationFee", "Lease Termination Fee", "currency", "0.00"),
+        field("leaseDispositionFee", "Lease Disposition Fee", "currency", "0.00")
+      ]
+    },
+    results: {
+      narrative: (v, r) =>
+        `Loan of ${money(v.loanAmount)} from ${v.loanDate} at an Annual Percentage Rate of ${v.interestRate}. ` +
+        `Payment of ${money(r.standardPayment)} paid ${frequencyLabel(v.paymentFrequency)}.`,
+      summaryGrid: [
+        ["Loan Amount", (v, r) => money(v.loanAmount)],
+        ["Loan Date", (v, r) => v.loanDate],
+        ["Interest Rate", (v, r) => v.interestRate],
+        ["Payment Count", (v, r) => r.paymentCount],
+        ["Standard Payment", (v, r) => money(r.standardPayment)],
+        ["First Payment Date", (v, r) => r.firstPaymentDate],
+        ["Final Payment", (v, r) => money(r.finalPayment)],
+        ["Final Payment Date", (v, r) => r.finalPaymentDate],
+        ["Total Interest", (v, r) => money(r.totalInterest)],
+        ["Total of Payments", (v, r) => money(r.totalOfPayments)]
+      ],
+      hasFullSchedule: true,
+      hasPrint: true,
+      scheduleColumns: ["Pmt", "Date", "Amount", "Sales Tax", "Escrow", "Billed Fee", "Principal", "Interest", "Balance"]
+    }
+  },
+
+  // ------------------------------------------------------------------ ROUTE 2
+  {
+    id: "ira",
+    navTitle: "IRA Projections",
+    navSubtitle: "Retirement savings",
+    title: "IRA Projections",
+    hasToggle: false,
+    basicFields: [
+      field("annualContribution", "Annual Contribution", "currency", "5,000.00"),
+      field("contributionFrequency", "Contribution Frequency", "select", "0 Monthly", {
+        options: ["0 Monthly", "1 Quarterly", "2 Annually"]
+      }),
+      field("birthdate", "Birthdate", "date", "_/_/_"),
+      field("startDate", "Start Date", "date", "07/01/2026"),
+      field("rolloverAmount", "Rollover Amount", "currency", "0.00"),
+      field("accountOpeningFee", "Account Opening Fee", "currency", "0.00"),
+      field("annualMaintFee", "Annual Maint Fee", "currency", "0.00"),
+      field("earlyWDPenaltyDays", "Early W/D Penalty Days", "text", "0"),
+      field("dividendRate", "Dividend Rate", "percent", "5.000%"),
+      field("dividendFrequency", "Dividend Frequency", "select", "1 Quarterly", {
+        options: ["0 Monthly", "1 Quarterly", "2 Annually"]
+      }),
+      field("contributionYears", "Contribution Years", "text", "30"),
+      field("distributionYears", "Distribution Years", "text", "22"),
+      field("annualMaintFeeType", "Annual Maint Fee Type", "select", "0 Fee taken at beginning of year", {
+        options: ["0 Fee taken at beginning of year", "1 Fee taken at end of year"]
+      }),
+      field("waiveMaintFeeFirstYear", "Waive Maint Fee in First Year", "select", "Yes", {
+        options: ["Yes", "No"]
+      })
+    ],
+    results: {
+      narrative: (v) =>
+        `IRA Projection Calculation starting ${v.startDate}. ` +
+        `The following figures represent estimates and are not a guarantee of a specific rate of return.`,
+      summaryGrid: [
+        ["Amount of Annual Contribution to IRA", (v) => money(v.annualContribution)],
+        ["Frequency of Contributions", (v) => v.contributionFrequency],
+        ["Estimated Annual Dividend Rate", (v) => v.dividendRate],
+        ["Frequency of Dividend payments", (v) => v.dividendFrequency],
+        ["Number of Years of Contributions", (v) => v.contributionYears],
+        ["Number of Years of Monthly Distributions", (v) => v.distributionYears],
+        ["Estimate of total amount contributed", (v, r) => money(r.totalContributed)],
+        ["Estimate of total value after all contributions", (v, r) => money(r.totalValue)],
+        ["Estimate of the monthly distribution amount", (v, r) => money(r.monthlyDistribution)],
+        ["Estimate of the total amount distributed", (v, r) => money(r.totalDistributed)],
+        ["Member Birthdate", (v) => v.birthdate],
+        ["Estimate of the total amount at age 60", (v, r) => money(r.at60)],
+        ["Estimate of the total amount at age 65", (v, r) => money(r.at65)],
+        ["Estimate of the total amount at age 70", (v, r) => money(r.at70)]
+      ],
+      milestoneTable: {
+        columns: ["Time", "Total Value", "Avail less 0 day penalty"],
+        rowsKey: "milestones"
+      },
+      hasFullSchedule: true,
+      hasPrint: true,
+      scheduleColumns: ["Year", "Month", "Action", "Amount", "Account Value"]
+    }
+  },
+
+  // ------------------------------------------------------------------ ROUTE 3
+  {
+    id: "ira-rmd",
+    navTitle: "IRA RMD",
+    navSubtitle: "Required distributions",
+    title: "IRA Required Minimum Distribution Calculation",
+    hasToggle: false,
+    basicFields: [
+      field("ownerBirthdate", "Owner Birthdate", "date", "_/_/_", {
+        required: true,
+        validationMsg: "Must add owner birthdate to calculate."
+      }),
+      field("youngestNonspouse", "Youngest Nonspouse", "date", "_/_/_"),
+      field("oldestBeneficiary", "Oldest Beneficiary", "date", "_/_/_"),
+      field("requiredStartDate", "Required Start Date", "date", "_/_/_"),
+      field("fmvFor2025", "FMV for 2025", "currency", "0.00"),
+      field("refigureOwnerLifeExpect", "Refigure Owner Life Expect?", "select", "No", {
+        options: ["No", "Yes"]
+      }),
+      field("refigureSpouseLifeExpect", "Refigure Spouse Life Expect?", "select", "No", {
+        options: ["No"],
+        readOnly: true
+      }),
+      field("oldestBeneficiaryIsSpouse", "Oldest Beneficiary is Spouse?", "select", "No", {
+        options: ["No"],
+        readOnly: true
+      })
+    ],
+    results: {
+      disclaimer:
+        "The calculation of the required minimum distribution amount is the responsibility of the IRA owner. " +
+        "The following information may or may not reflect the required minimum amount and should be verified " +
+        "for accuracy by the IRA owner.",
+      specifications: [["Owner Birthdate", (v) => v.ownerBirthdate]],
+      resultsList: [
+        ["Distribution Begin Year", (v, r) => r.distributionBeginYear],
+        [(v, r) => `Owner Age in ${r.distributionBeginYear}`, (v, r) => r.ownerAge],
+        ["Minimum Distribution Incidental Benefit Divisor", (v, r) => r.mdibDivisor]
+      ],
+      hasFullSchedule: false,
+      hasPrint: true
+    }
+  },
+
+  // ------------------------------------------------------------------ ROUTE 4
+  {
+    id: "dividend",
+    navTitle: "Dividend Projections",
+    navSubtitle: "Share dividend est.",
+    title: "Dividend Projections",
+    hasToggle: false,
+    secondaryDropdown: field("shareType", "Share Type", "combobox", "", {
+      options: SHARE_TYPES,
+      placeholder: "— Select a share type —"
+    }),
+    basicFields: [
+      field("openingDate", "Opening Date", "date", "06/05/2026"),
+      field("depositStartDate", "Deposit Start Date", "date", "06/05/2026"),
+      field("openingBalance", "Opening Balance", "currency", "0.00"),
+      field("depositAmount", "Deposit Amount", "currency", "0.00", {
+        required: true,
+        validationMsg: "Must add deposit amount to calculate."
+      }),
+      field("dividendType", "Dividend Type", "text", "0"),
+      field("amortizationSchedule", "Amortization Schedule", "text", "0"),
+      field("maturityTermPeriod", "Maturity Term Period", "text", "0"),
+      field("dividendFillInRate", "Dividend Fill In Rate", "percent", "0.000%", { readOnly: true }),
+      field("dividendRateMargin", "Dividend Rate Margin", "percent", "0.000000%", { readOnly: true }),
+      field("dividendRateMarginSign", "Dividend Rate Margin Sign", "select", "0 (+)", {
+        options: ["0 (+)", "1 (-)"],
+        readOnly: true
+      }),
+      field("depositDay1", "Deposit Day 1", "text", "5"),
+      field("depositDay2", "Deposit Day 2", "text", "0", { readOnly: true }),
+      field("depositFrequency", "Deposit Frequency", "select", "04 Monthly", {
+        options: ["04 Monthly", "02 Bi-Weekly", "01 Weekly", "12 Annually"]
+      }),
+      field("amortizeSchdType", "Amortize Schd Type", "select", "0 Local", {
+        options: ["0 Local", "1 Regional", "2 National"]
+      }),
+      field("endingDate", "Ending Date", "date", "_/_/_"),
+      field("dividendPostCode", "Dividend Post Code", "select", "0 Deposit to Share", {
+        options: ["0 Deposit to Share", "1 Deposit to Draft"]
+      }),
+      field("maturityTermFrequency", "Maturity Term Frequency", "select", "0 Months", {
+        options: ["0 Months", "1 Years"]
+      }),
+      field("firstMaturityDate", "First Maturity Date", "date", "_/_/_", { readOnly: true })
+    ],
+    results: {
+      specifications: [
+        ["Opening Date", (v) => v.openingDate],
+        ["Opening Balance", (v) => money(v.openingBalance)],
+        ["Deposit Amount", (v) => money(v.depositAmount)],
+        ["Deposit Frequency", (v) => v.depositFrequency],
+        ["Deposit First Date", (v) => v.depositStartDate],
+        ["Dividend Type", (v) => v.dividendType],
+        ["Calculate Up To", (v) => (v.endingDate ? v.endingDate : "Maturity")]
+      ],
+      resultsList: [
+        ["Total Amount Deposited", (v, r) => money(r.totalDeposited)],
+        ["Total Dividend Amount", (v, r) => money(r.totalDividend)],
+        ["Total Final Balance", (v, r) => money(r.totalFinalBalance)],
+        ["Totals Calculated Through", (v, r) => r.calculatedThrough]
+      ],
+      hasFullSchedule: true,
+      hasPrint: true,
+      scheduleColumns: ["Date", "Description", "Amount", "New Balance"]
+    }
+  },
+
+  // ------------------------------------------------------------------ ROUTE 5
+  {
+    id: "apy",
+    navTitle: "APY Calculations",
+    navSubtitle: "Annual percentage yield",
+    title: "Annual Percentage Yield Calculations",
+    hasToggle: false,
+    secondaryDropdown: field("shareType", "Share Type", "combobox", "", {
+      options: SHARE_TYPES,
+      placeholder: "— Select a share type —"
+    }),
+    basicFields: [
+      field("startDate", "Start Date", "date", "01/01/2026"),
+      field("startBalance", "Start Balance", "currency", "0.00", {
+        required: true,
+        validationMsg: "Must add start balance to calculate."
+      }),
+      field("maturityTermFrequency", "Maturity Term Frequency", "select", "0 Months", {
+        options: ["0 Months", "1 Years"]
+      }),
+      field("maturityTermPeriod", "Maturity Term Period", "text", "0"),
+      field("dividendType", "Dividend Type", "text", "0"),
+      field("dividendFillInRate", "Dividend Fill In Rate", "percent", "0.000%", { readOnly: true }),
+      field("dividendPostCode", "Dividend Post Code", "select", "0 Deposit to Share", {
+        options: ["0 Deposit to Share", "1 Deposit to Draft"]
+      })
+    ],
+    results: {
+      specifications: [
+        ["Start Date", (v) => v.startDate],
+        ["Start Balance", (v) => money(v.startBalance)],
+        ["Dividend Type", (v) => v.dividendType]
+      ],
+      resultsList: [
+        ["Total Dividend Amount", (v, r) => money(r.totalDividend)],
+        ["Total Final Balance", (v, r) => money(r.totalFinalBalance)],
+        ["Totals Calculated Through", (v, r) => r.calculatedThrough],
+        ["Days In Calculation", (v, r) => r.daysInCalculation]
+      ],
+      highlightedYield: (v, r) => r.apy,
+      calculationDetails: (v, r) => [
+        ["Dividend Calculation Method", r.dividendCalcMethod],
+        ["Post Average Balance Comment", r.postAverageBalanceComment]
+      ],
+      tieredBreakdown: (v, r) => r.tiers,
+      hasFullSchedule: true,
+      hasPrint: true,
+      scheduleColumns: ["Date", "Description", "Amount", "New Balance"]
+    }
+  },
+
+  // ------------------------------------------------------------------ ROUTE 6
+  {
+    id: "reverse-apy",
+    navTitle: "Reverse APY",
+    navSubtitle: "APY to nominal rate",
+    title: "Simple Reverse APY Calculation",
+    hasToggle: false,
+    basicFields: [
+      field("compounding", "Compounding", "select", "0 Daily Compounding", {
+        options: ["0 Daily Compounding", "1 Monthly Compounding", "2 Quarterly Compounding", "3 Annual Compounding"]
+      }),
+      field("annualPercentageYield", "Annual Percentage Yield", "percent", "0.000%")
+    ],
+    results: {
+      dynamicTitle: "Reverse Annual Percentage Yield Calculation",
+      singleCard: ["Approximate Dividend Rate:", (v, r) => r.approximateDividendRate],
+      hasFullSchedule: false,
+      hasPrint: true
+    }
+  }
+];
+
+function frequencyLabel(freq) {
+  if (!freq) return "monthly";
+  const map = {
+    "04 Monthly": "monthly",
+    "02 Bi-Weekly": "bi-weekly",
+    "01 Weekly": "weekly",
+    "12 Annually": "annually",
+    "03 Semi-Monthly": "semi-monthly"
+  };
+  return map[freq] || freq.toLowerCase();
+}
+
+function money(val) {
+  const n = parseFloat(String(val).replace(/[^0-9.-]/g, ""));
+  if (isNaN(n)) return "$0.00";
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+</script>
+
+<script>
+// Numeric input masking: only digits, decimal points, and slashes are
+// permitted anywhere in the Projections module (per spec: "Input Masking").
+
+const MASK_ALLOWED_KEYS = new Set([
+  "Backspace", "Delete", "Tab", "Escape", "Enter",
+  "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
+]);
+
+function isMaskAllowedChar(ch) {
+  return /[0-9.\/]/.test(ch);
+}
+
+function attachNumericMask(input) {
+  input.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || MASK_ALLOWED_KEYS.has(e.key)) return;
+    if (e.key.length === 1 && !isMaskAllowedChar(e.key)) {
+      e.preventDefault();
+    }
+  });
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData("text");
+    const cleaned = text.replace(/[^0-9.\/]/g, "");
+    document.execCommand("insertText", false, cleaned);
+  });
+  input.addEventListener("input", () => {
+    if (/[^0-9.\/]/.test(input.value)) {
+      input.value = input.value.replace(/[^0-9.\/]/g, "");
+    }
+  });
+}
+</script>
+
+<script>
+// Searchable type-ahead combobox used for Loan Type / Share Type fields.
+// wrapperEl must contain: input.field__control, div.combobox__list
+
+function initCombobox(wrapperEl, options, initialValue, onChange) {
+  const input = wrapperEl.querySelector(".field__control");
+  const list = wrapperEl.querySelector(".combobox__list");
+  let highlighted = -1;
+  let filtered = options.slice();
+
+  input.value = initialValue || "";
+
+  function renderList() {
+    list.innerHTML = "";
+    if (filtered.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "combobox__empty";
+      empty.textContent = "No matches found";
+      list.appendChild(empty);
+      return;
+    }
+    filtered.forEach((opt, i) => {
+      const item = document.createElement("div");
+      item.className = "combobox__option" + (i === highlighted ? " is-highlighted" : "");
+      item.textContent = opt;
+      item.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        select(opt);
+      });
+      list.appendChild(item);
+    });
+  }
+
+  function open() {
+    wrapperEl.classList.add("is-open");
+    renderList();
+  }
+
+  function close() {
+    wrapperEl.classList.remove("is-open");
+    highlighted = -1;
+  }
+
+  function filter() {
+    const q = input.value.trim().toUpperCase();
+    filtered = q ? options.filter((o) => o.includes(q)) : options.slice();
+    highlighted = -1;
+    renderList();
+  }
+
+  function select(value) {
+    input.value = value;
+    close();
+    if (onChange) onChange(value);
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  input.addEventListener("focus", () => {
+    filter();
+    open();
+  });
+
+  input.addEventListener("input", () => {
+    filter();
+    open();
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (!wrapperEl.classList.contains("is-open")) return open();
+      highlighted = Math.min(highlighted + 1, filtered.length - 1);
+      renderList();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      highlighted = Math.max(highlighted - 1, 0);
+      renderList();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlighted >= 0 && filtered[highlighted]) select(filtered[highlighted]);
+    } else if (e.key === "Escape") {
+      close();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!wrapperEl.contains(e.target)) close();
+  });
+
+  return {
+    getValue: () => input.value,
+    setValue: (v) => {
+      input.value = v;
+    }
+  };
+}
+</script>
+
+<script>
+// Renders Zone 2 (Input Parameters panel) from a route config, and manages
+// form state, masking, required-field validation, and conditional sections.
+
+const FormRenderer = (function () {
+  function isPlaceholderDefault(def) {
+    if (def == null) return false;
+    return /^_+(\/_+)*$/.test(def) || def === "MM/DD/YYYY";
+  }
+
+  function isFieldFilled(fieldCfg, rawValue) {
+    const val = (rawValue || "").trim();
+    if (!val) return false;
+    if (fieldCfg.type === "date") {
+      return !isPlaceholderDefault(val);
+    }
+    if (fieldCfg.type === "currency" || fieldCfg.type === "percent") {
+      const n = parseFloat(val.replace(/[^0-9.-]/g, ""));
+      return !isNaN(n) && n > 0;
+    }
+    return true;
+  }
+
+  function buildLabelRow(fieldCfg) {
+    const row = document.createElement("div");
+    row.className = "field__label-row";
+
+    const label = document.createElement("span");
+    label.className = "field__label";
+    label.textContent = fieldCfg.label;
+    row.appendChild(label);
+
+    if (fieldCfg.required) {
+      const star = document.createElement("span");
+      star.className = "field__required";
+      star.textContent = "*";
+      row.appendChild(star);
+    }
+    if (fieldCfg.readOnly) {
+      row.appendChild(svgIcon("fieldLock", "field__lock-icon"));
+    }
+    return row;
+  }
+
+  function buildControl(fieldCfg) {
+    const wrap = document.createElement("div");
+    wrap.className = "field__control-wrap";
+
+    if (fieldCfg.type === "select") {
+      const select = document.createElement("select");
+      select.className = "field__control";
+      select.id = "field-" + fieldCfg.id;
+      select.disabled = !!fieldCfg.readOnly;
+      (fieldCfg.options || []).forEach((opt) => {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        if (opt === fieldCfg.default) o.selected = true;
+        select.appendChild(o);
+      });
+      wrap.appendChild(select);
+      wrap.appendChild(svgIcon("fieldChevron", "field__icon-right icon"));
+      return { wrap, control: select };
+    }
+
+    if (fieldCfg.type === "combobox") {
+      wrap.classList.add("combobox");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "field__control has-icon-left has-icon-right";
+      input.id = "field-" + fieldCfg.id;
+      input.placeholder = fieldCfg.placeholder || "";
+      input.autocomplete = "off";
+      wrap.appendChild(input);
+
+      wrap.appendChild(svgIcon("fieldSearch", "field__icon-left icon"));
+      wrap.appendChild(svgIcon("fieldChevron", "field__icon-right icon"));
+
+      const list = document.createElement("div");
+      list.className = "combobox__list";
+      wrap.appendChild(list);
+
+      return { wrap, control: input, isCombobox: true };
+    }
+
+    // text / currency / percent / date all render as masked text inputs
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "field__control";
+    input.id = "field-" + fieldCfg.id;
+    input.readOnly = !!fieldCfg.readOnly;
+    if (fieldCfg.readOnly) input.classList.add("is-readonly");
+
+    if (isPlaceholderDefault(fieldCfg.default)) {
+      input.placeholder = fieldCfg.default;
+      input.value = "";
+    } else {
+      input.value = fieldCfg.default != null ? fieldCfg.default : "";
+    }
+
+    wrap.appendChild(input);
+    return { wrap, control: input };
+  }
+
+  function buildField(fieldCfg, state) {
+    const field = document.createElement("div");
+    field.className = "field";
+    field.appendChild(buildLabelRow(fieldCfg));
+
+    const { wrap, control, isCombobox } = buildControl(fieldCfg);
+    field.appendChild(wrap);
+
+    const error = document.createElement("div");
+    error.className = "field__error is-hidden";
+    error.textContent = fieldCfg.validationMsg || "This field is required.";
+    field.appendChild(error);
+
+    if (!fieldCfg.readOnly) {
+      if (fieldCfg.type === "text" || fieldCfg.type === "currency" || fieldCfg.type === "date") {
+        attachNumericMask(control);
+      } else if (fieldCfg.type === "percent") {
+        attachNumericMask(control);
+        control.addEventListener("focus", () => {
+          control.value = control.value.replace("%", "");
+        });
+        control.addEventListener("blur", () => {
+          const raw = control.value.trim();
+          if (raw === "") return;
+          const n = parseFloat(raw);
+          if (!isNaN(n)) control.value = n.toFixed(3) + "%";
+        });
+      }
+    }
+
+    if (isCombobox) {
+      initCombobox(wrap, fieldCfg.options, fieldCfg.default, () => state.notifyChange());
+    }
+
+    state.fields[fieldCfg.id] = { cfg: fieldCfg, control, wrap, errorEl: error };
+    return field;
+  }
+
+  function buildGrid(fieldsCfg, state) {
+    const grid = document.createElement("div");
+    grid.className = "field-grid";
+    fieldsCfg.forEach((f) => grid.appendChild(buildField(f, state)));
+    return grid;
+  }
+
+  function render(route, container, onCalculate) {
+    container.innerHTML = "";
+    const state = { fields: {}, notifyChange: () => updateValidity() };
+
+    const header = document.createElement("div");
+    header.className = "panel__header";
+
+    const title = document.createElement("div");
+    title.className = "panel__title";
+    title.textContent = "Input Parameters";
+    header.appendChild(title);
+
+    const actions = document.createElement("div");
+    actions.className = "panel__header-actions";
+    header.appendChild(actions);
+
+    let advancedToggleBtn = null;
+    if (route.hasToggle) {
+      advancedToggleBtn = document.createElement("button");
+      advancedToggleBtn.type = "button";
+      advancedToggleBtn.className = "btn btn-outline-blue";
+      advancedToggleBtn.textContent = "Advanced View";
+      actions.appendChild(advancedToggleBtn);
+    }
+
+    const body = document.createElement("div");
+    body.className = "panel__body";
+
+    if (route.secondaryDropdown) {
+      const row = document.createElement("div");
+      row.className = "field-grid field-grid--full";
+      row.style.marginBottom = "16px";
+      row.appendChild(buildField(route.secondaryDropdown, state));
+      body.appendChild(row);
+    }
+
+    body.appendChild(buildGrid(route.basicFields || [], state));
+
+    let advancedSection = null;
+    if (route.advancedFields && route.advancedFields.length) {
+      advancedSection = document.createElement("div");
+      advancedSection.className = "field-section is-hidden";
+      advancedSection.appendChild(buildGrid(route.advancedFields, state));
+      body.appendChild(advancedSection);
+    }
+
+    let conditionalSection = null;
+    if (route.conditionalSection) {
+      conditionalSection = document.createElement("div");
+      conditionalSection.className = "field-section is-hidden";
+      const label = document.createElement("p");
+      label.className = "field-section__label";
+      label.textContent = route.conditionalSection.label;
+      conditionalSection.appendChild(label);
+      conditionalSection.appendChild(buildGrid(route.conditionalSection.fields, state));
+      body.appendChild(conditionalSection);
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "panel__footer";
+
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "btn btn-secondary";
+    clearBtn.textContent = "Clear";
+    footer.appendChild(clearBtn);
+
+    const calcBtn = document.createElement("button");
+    calcBtn.type = "button";
+    calcBtn.className = "btn btn-primary";
+    calcBtn.textContent = "Calculate";
+    footer.appendChild(calcBtn);
+
+    container.appendChild(header);
+    container.appendChild(body);
+    container.appendChild(footer);
+
+    function getValues() {
+      const values = {};
+      Object.keys(state.fields).forEach((id) => {
+        values[id] = state.fields[id].control.value;
+      });
+      return values;
+    }
+
+    function updateConditionalVisibility() {
+      if (!route.conditionalSection || !conditionalSection) return;
+      const cond = route.conditionalSection.showWhen;
+      const entry = state.fields[cond.field];
+      const currentVal = entry ? entry.control.value : "";
+      const show = currentVal === cond.equals;
+      conditionalSection.classList.toggle("is-hidden", !show);
+    }
+
+    function updateValidity() {
+      let allValid = true;
+      Object.values(state.fields).forEach(({ cfg, control, errorEl }) => {
+        if (!cfg.required) return;
+        const filled = isFieldFilled(cfg, control.value);
+        control.classList.toggle("is-invalid", !filled);
+        errorEl.classList.toggle("is-hidden", filled);
+        if (!filled) allValid = false;
+      });
+      calcBtn.disabled = !allValid;
+      updateConditionalVisibility();
+    }
+
+    body.addEventListener("input", updateValidity);
+    body.addEventListener("change", updateValidity);
+
+    if (advancedToggleBtn && advancedSection) {
+      advancedToggleBtn.addEventListener("click", () => {
+        const nowHidden = advancedSection.classList.toggle("is-hidden");
+        advancedToggleBtn.textContent = nowHidden ? "Advanced View" : "Basic View";
+      });
+    }
+
+    clearBtn.addEventListener("click", () => {
+      render(route, container, onCalculate);
+    });
+
+    calcBtn.addEventListener("click", () => {
+      if (calcBtn.disabled) return;
+      onCalculate(getValues());
+    });
+
+    updateValidity();
+
+    function setFieldValue(id, value) {
+      const entry = state.fields[id];
+      if (entry) entry.control.value = value;
+    }
+
+    function allFieldConfigs() {
+      return [
+        ...(route.secondaryDropdown ? [route.secondaryDropdown] : []),
+        ...(route.basicFields || []),
+        ...(route.advancedFields || []),
+        ...(route.conditionalSection ? route.conditionalSection.fields : [])
+      ];
+    }
+
+    return { getValues, setFieldValue, allFieldConfigs };
+  }
+
+  return { render, isFieldFilled, isPlaceholderDefault };
+})();
+</script>
+
+<script>
+// Stand-in projection math. These are simplified, generally-accepted
+// financial formulas used to populate the Results panel for demo purposes.
+// They are NOT the authoritative Symitar calculation engine (day-count
+// conventions, DQ bucket rules, etc. are intentionally out of scope).
+
+const Calc = (function () {
+  const DEMO_FALLBACK_RATE = 0.04; // used only when a rate field is system-populated at 0
+
+  function num(v) {
+    const n = parseFloat(String(v == null ? "" : v).replace(/[^0-9.-]/g, ""));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function pct(v) {
+    return num(v) / 100;
+  }
+
+  function parseDate(str) {
+    if (!str) return null;
+    const m = String(str).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (!m) return null;
+    let [, mo, da, yr] = m;
+    if (yr.length === 2) yr = "20" + yr;
+    const d = new Date(parseInt(yr, 10), parseInt(mo, 10) - 1, parseInt(da, 10));
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function addMonths(date, n) {
+    const d = new Date(date.getTime());
+    d.setMonth(d.getMonth() + n);
+    return d;
+  }
+
+  function addYears(date, n) {
+    const d = new Date(date.getTime());
+    d.setFullYear(d.getFullYear() + n);
+    return d;
+  }
+
+  function fmtDate(d) {
+    if (!d) return "—";
+    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+  }
+
+  function periodsPerYear(freqLabel) {
+    if (!freqLabel) return 12;
+    if (/weekly/i.test(freqLabel) && !/bi-/i.test(freqLabel)) return 52;
+    if (/bi-weekly/i.test(freqLabel)) return 26;
+    if (/semi-monthly/i.test(freqLabel)) return 24;
+    if (/monthly/i.test(freqLabel)) return 12;
+    if (/quarterly/i.test(freqLabel)) return 4;
+    if (/annually/i.test(freqLabel)) return 1;
+    return 12;
+  }
+
+  // ---------------------------------------------------------------- Route 1
+  function loan(v) {
+    const principal = num(v.loanAmount);
+    const months = Math.max(1, Math.round(num(v.loanMonths)) || 36);
+    const annualRate = pct(v.interestRate);
+    const monthlyRate = annualRate / 12;
+    const loanDate = parseDate(v.loanDate) || new Date();
+
+    const payment =
+      monthlyRate > 0
+        ? (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+        : principal / months;
+
+    let balance = principal;
+    const schedule = [];
+    let totalInterest = 0;
+    for (let i = 1; i <= months; i++) {
+      const interest = balance * monthlyRate;
+      let principalPortion = payment - interest;
+      let pmtAmount = payment;
+      if (i === months || principalPortion > balance) {
+        principalPortion = balance;
+        pmtAmount = principalPortion + interest;
+      }
+      balance = Math.max(0, balance - principalPortion);
+      totalInterest += interest;
+      schedule.push({
+        Pmt: i,
+        Date: fmtDate(addMonths(loanDate, i)),
+        Amount: money(pmtAmount),
+        "Sales Tax": money(0),
+        Escrow: money(0),
+        "Billed Fee": money(0),
+        Principal: money(principalPortion),
+        Interest: money(interest),
+        Balance: money(balance)
+      });
+    }
+    const finalRow = schedule[schedule.length - 1];
+
+    return {
+      standardPayment: payment,
+      paymentCount: months,
+      firstPaymentDate: fmtDate(addMonths(loanDate, 1)),
+      finalPayment: num(finalRow.Amount),
+      finalPaymentDate: finalRow.Date,
+      totalInterest,
+      totalOfPayments: principal + totalInterest,
+      schedule
+    };
+  }
+
+  // ---------------------------------------------------------------- Route 2
+  function ira(v) {
+    const annualContribution = num(v.annualContribution);
+    const rate = pct(v.dividendRate) || DEMO_FALLBACK_RATE;
+    const n = periodsPerYear(v.dividendFrequency);
+    const contribYears = Math.max(1, Math.round(num(v.contributionYears)) || 30);
+    const distYears = Math.max(1, Math.round(num(v.distributionYears)) || 22);
+
+    function futureValue(years) {
+      const periods = years * n;
+      const periodicRate = rate / n;
+      const contribPerPeriod = annualContribution / n;
+      if (periodicRate === 0) return contribPerPeriod * periods;
+      return contribPerPeriod * ((Math.pow(1 + periodicRate, periods) - 1) / periodicRate);
+    }
+
+    const totalContributed = annualContribution * contribYears;
+    const totalValue = futureValue(contribYears);
+    const monthlyDistribution = totalValue / (distYears * 12);
+    const totalDistributed = monthlyDistribution * distYears * 12;
+
+    const birthdate = parseDate(v.birthdate);
+    const startDate = parseDate(v.startDate) || new Date();
+    const currentAge = birthdate
+      ? startDate.getFullYear() - birthdate.getFullYear()
+      : 30;
+
+    const milestones = [];
+    for (let y = 5; y <= contribYears; y += 5) {
+      const val = futureValue(y);
+      milestones.push({
+        Time: `${y} Years`,
+        "Total Value": money(val),
+        "Avail less 0 day penalty": money(val)
+      });
+    }
+
+    const schedule = [];
+    for (let y = 1; y <= contribYears; y++) {
+      schedule.push({
+        Year: y,
+        Month: 12,
+        Action: "Contribution",
+        Amount: money(annualContribution),
+        "Account Value": money(futureValue(y))
+      });
+    }
+    let distBalance = totalValue;
+    for (let d = 1; d <= distYears; d++) {
+      distBalance = Math.max(0, distBalance - monthlyDistribution * 12);
+      schedule.push({
+        Year: contribYears + d,
+        Month: 12,
+        Action: "Distribution",
+        Amount: money(monthlyDistribution * 12),
+        "Account Value": money(distBalance)
+      });
+    }
+
+    return {
+      totalContributed,
+      totalValue,
+      monthlyDistribution,
+      totalDistributed,
+      at60: futureValue(Math.max(1, 60 - currentAge)),
+      at65: futureValue(Math.max(1, 65 - currentAge)),
+      at70: futureValue(Math.max(1, 70 - currentAge)),
+      milestones,
+      schedule
+    };
+  }
+
+  // ---------------------------------------------------------------- Route 3
+  const UNIFORM_LIFETIME_DIVISORS = {
+    72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0,
+    79: 21.1, 80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0,
+    86: 15.2, 87: 14.4, 88: 13.7, 89: 12.9, 90: 12.2
+  };
+
+  function iraRmd(v) {
+    const birthdate = parseDate(v.ownerBirthdate);
+    const thisYear = new Date().getFullYear();
+    const birthYear = birthdate ? birthdate.getFullYear() : thisYear - 73;
+    let distributionBeginYear = birthYear + 73;
+    if (distributionBeginYear < thisYear) distributionBeginYear = thisYear;
+    const ownerAge = distributionBeginYear - birthYear;
+    const divisor = UNIFORM_LIFETIME_DIVISORS[ownerAge] || 24.7;
+
+    return {
+      distributionBeginYear,
+      ownerAge,
+      mdibDivisor: divisor.toFixed(1)
+    };
+  }
+
+  // ---------------------------------------------------------------- Route 4
+  function dividend(v) {
+    const opening = num(v.openingBalance);
+    const deposit = num(v.depositAmount);
+    const rate = pct(v.dividendFillInRate) || DEMO_FALLBACK_RATE;
+    const n = periodsPerYear(v.depositFrequency);
+    const termMonths = Math.max(1, Math.round(num(v.maturityTermPeriod)) || 12);
+    const periods = Math.max(1, Math.round((termMonths / 12) * n));
+    const startDate = parseDate(v.depositStartDate) || new Date();
+    const periodicRate = rate / n;
+
+    let balance = opening;
+    const schedule = [];
+    let totalDeposited = 0;
+    let totalDividend = 0;
+    const stepMonths = 12 / n;
+
+    for (let i = 1; i <= periods; i++) {
+      balance += deposit;
+      totalDeposited += deposit;
+      schedule.push({
+        Date: fmtDate(addMonths(startDate, Math.round(i * stepMonths))),
+        Description: "Deposit",
+        Amount: money(deposit),
+        "New Balance": money(balance)
+      });
+      const div = balance * periodicRate;
+      if (div > 0) {
+        balance += div;
+        totalDividend += div;
+        schedule.push({
+          Date: fmtDate(addMonths(startDate, Math.round(i * stepMonths))),
+          Description: "Dividend",
+          Amount: money(div),
+          "New Balance": money(balance)
+        });
+      }
+    }
+
+    return {
+      totalDeposited,
+      totalDividend,
+      totalFinalBalance: balance,
+      calculatedThrough: fmtDate(addMonths(startDate, termMonths)),
+      schedule
+    };
+  }
+
+  // ---------------------------------------------------------------- Route 5
+  function apy(v) {
+    const startBalance = num(v.startBalance);
+    const rate = pct(v.dividendFillInRate) || DEMO_FALLBACK_RATE;
+    const termMonths = Math.max(1, Math.round(num(v.maturityTermPeriod)) || 12);
+    const n = 365;
+    const days = Math.round((termMonths / 12) * 365);
+    const startDate = parseDate(v.startDate) || new Date();
+
+    const apyValue = Math.pow(1 + rate / n, n) - 1;
+    const totalFinalBalance = startBalance * Math.pow(1 + rate / n, days);
+    const totalDividend = totalFinalBalance - startBalance;
+
+    const schedule = [
+      {
+        Date: fmtDate(startDate),
+        Description: "Opening Balance",
+        Amount: money(startBalance),
+        "New Balance": money(startBalance)
+      },
+      {
+        Date: fmtDate(addMonths(startDate, termMonths)),
+        Description: "Dividend",
+        Amount: money(totalDividend),
+        "New Balance": money(totalFinalBalance)
+      }
+    ];
+
+    return {
+      totalDividend,
+      totalFinalBalance,
+      calculatedThrough: fmtDate(addMonths(startDate, termMonths)),
+      daysInCalculation: days,
+      apy: (apyValue * 100).toFixed(3) + "%",
+      dividendCalcMethod: "Average Daily Balance",
+      postAverageBalanceComment: "Dividends compounded daily and credited at maturity.",
+      tiers: [{ label: "All Balances", rate: (rate * 100).toFixed(3) + "%" }],
+      schedule
+    };
+  }
+
+  // ---------------------------------------------------------------- Route 6
+  function reverseApy(v) {
+    const apyValue = pct(v.annualPercentageYield);
+    const compoundingMap = {
+      "0 Daily Compounding": 365,
+      "1 Monthly Compounding": 12,
+      "2 Quarterly Compounding": 4,
+      "3 Annual Compounding": 1
+    };
+    const n = compoundingMap[v.compounding] || 365;
+    const nominal = n * (Math.pow(1 + apyValue, 1 / n) - 1);
+    return {
+      approximateDividendRate: (nominal * 100).toFixed(3) + "%"
+    };
+  }
+
+  function money(val) {
+    const n = num(val);
+    return n.toFixed(2);
+  }
+
+  const HANDLERS = {
+    loan, ira, "ira-rmd": iraRmd, dividend, apy, "reverse-apy": reverseApy
+  };
+
+  function compute(routeId, values) {
+    const handler = HANDLERS[routeId];
+    return handler ? handler(values) : {};
+  }
+
+  return { compute, fmtDate, parseDate, addMonths, addYears, num, pct };
+})();
+</script>
+
+<script>
+// Renders Zone 3 (Results panel): empty state, then narrative/summary/
+// specifications/results/tables once Calculate has produced a result object.
+
+const ResultsRenderer = (function () {
+  function buildHeader(route, onToggleSchedule, onPrint) {
+    const header = document.createElement("div");
+    header.className = "panel__header";
+
+    const title = document.createElement("div");
+    title.className = "panel__title";
+    title.textContent = "Results";
+    header.appendChild(title);
+
+    const actions = document.createElement("div");
+    actions.className = "panel__header-actions";
+
+    if (route.results.hasFullSchedule) {
+      const label = document.createElement("label");
+      label.className = "checkbox-field";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = true;
+      checkbox.addEventListener("change", () => onToggleSchedule(checkbox.checked));
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode("Full Schedule"));
+      actions.appendChild(label);
+    }
+
+    if (route.results.hasPrint) {
+      const printBtn = document.createElement("button");
+      printBtn.type = "button";
+      printBtn.className = "btn btn-secondary btn-small";
+      printBtn.appendChild(svgIcon("print", "icon"));
+      printBtn.appendChild(document.createTextNode("Print"));
+      printBtn.addEventListener("click", onPrint);
+      actions.appendChild(printBtn);
+    }
+
+    header.appendChild(actions);
+    return header;
+  }
+
+  function renderEmpty(route, container) {
+    container.innerHTML = "";
+    container.appendChild(buildHeader(route, () => {}, () => window.print()));
+    const body = document.createElement("div");
+    body.className = "panel__body";
+    body.innerHTML =
+      '<p class="results-empty">Enter parameters above and click Calculate to view projection results.</p>';
+    container.appendChild(body);
+    // Hide output controls in the empty state per spec.
+    container.querySelectorAll(".panel__header-actions > *").forEach((el) => el.classList.add("is-hidden"));
+  }
+
+  function summaryGridEl(items, values, result) {
+    const grid = document.createElement("div");
+    grid.className = "summary-grid";
+    items.forEach(([label, valueFn]) => {
+      const card = document.createElement("div");
+      card.className = "summary-card";
+      const l = document.createElement("p");
+      l.className = "summary-card__label";
+      l.textContent = label;
+      const v = document.createElement("p");
+      v.className = "summary-card__value";
+      v.textContent = valueFn(values, result);
+      card.appendChild(l);
+      card.appendChild(v);
+      grid.appendChild(card);
+    });
+    return grid;
+  }
+
+  function detailListEl(items, values, result) {
+    const ul = document.createElement("ul");
+    ul.className = "detail-list";
+    items.forEach(([label, valueFn]) => {
+      const li = document.createElement("li");
+      const labelText = typeof label === "function" ? label(values, result) : label;
+      li.innerHTML = `<span>${labelText}</span><span>${valueFn(values, result)}</span>`;
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function scheduleTableEl(columns, rows) {
+    const wrap = document.createElement("div");
+    wrap.className = "schedule-wrap";
+
+    const head = document.createElement("div");
+    head.className = "schedule-header";
+    head.textContent = "Full Schedule";
+    wrap.appendChild(head);
+
+    const scroll = document.createElement("div");
+    scroll.className = "schedule-scroll";
+
+    const table = document.createElement("table");
+    table.className = "schedule-table";
+
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    columns.forEach((c) => {
+      const th = document.createElement("th");
+      th.textContent = c;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      columns.forEach((c) => {
+        const td = document.createElement("td");
+        td.textContent = row[c] != null ? row[c] : "";
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    scroll.appendChild(table);
+    wrap.appendChild(scroll);
+    return wrap;
+  }
+
+  function renderResults(route, container, values, result) {
+    container.innerHTML = "";
+    let scheduleWrap = null;
+
+    const header = buildHeader(
+      route,
+      (checked) => {
+        if (scheduleWrap) scheduleWrap.classList.toggle("is-hidden", !checked);
+      },
+      () => window.print()
+    );
+    container.appendChild(header);
+
+    const body = document.createElement("div");
+    body.className = "panel__body";
+    const cfg = route.results;
+
+    if (cfg.dynamicTitle) {
+      const h = document.createElement("h3");
+      h.className = "results-title";
+      h.textContent = cfg.dynamicTitle;
+      body.appendChild(h);
+    }
+
+    if (cfg.narrative) {
+      const p = document.createElement("p");
+      p.className = "results-narrative";
+      p.textContent = cfg.narrative(values, result);
+      body.appendChild(p);
+    }
+
+    if (cfg.disclaimer) {
+      const p = document.createElement("p");
+      p.className = "results-disclaimer";
+      p.textContent = cfg.disclaimer;
+      body.appendChild(p);
+    }
+
+    if (cfg.summaryGrid) {
+      body.appendChild(summaryGridEl(cfg.summaryGrid, values, result));
+    }
+
+    if (cfg.specifications) {
+      const h = document.createElement("p");
+      h.className = "results-section-heading";
+      h.textContent = "Specifications";
+      body.appendChild(h);
+      body.appendChild(detailListEl(cfg.specifications, values, result));
+    }
+
+    if (cfg.resultsList) {
+      const h = document.createElement("p");
+      h.className = "results-section-heading";
+      h.textContent = "Results";
+      body.appendChild(h);
+      body.appendChild(detailListEl(cfg.resultsList, values, result));
+    }
+
+    if (cfg.highlightedYield) {
+      const grid = document.createElement("div");
+      grid.className = "summary-grid";
+      const card = document.createElement("div");
+      card.className = "summary-card is-highlighted";
+      card.innerHTML =
+        '<p class="summary-card__label">Annual Percentage Yield</p>' +
+        `<p class="summary-card__value">${cfg.highlightedYield(values, result)}</p>`;
+      grid.appendChild(card);
+      body.appendChild(grid);
+    }
+
+    if (cfg.calculationDetails) {
+      const h = document.createElement("p");
+      h.className = "results-section-heading";
+      h.textContent = "Calculation Details";
+      body.appendChild(h);
+      const list = cfg.calculationDetails(values, result);
+      body.appendChild(detailListEl(list.map(([l, v]) => [l, () => v]), values, result));
+
+      if (cfg.tieredBreakdown) {
+        const tiers = cfg.tieredBreakdown(values, result) || [];
+        const ul = document.createElement("ul");
+        ul.className = "detail-list";
+        tiers.forEach((t) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<span>${t.label}</span><span>${t.rate}</span>`;
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+      }
+    }
+
+    if (cfg.singleCard) {
+      const [label, valueFn] = cfg.singleCard;
+      const grid = document.createElement("div");
+      grid.className = "summary-grid";
+      const card = document.createElement("div");
+      card.className = "summary-card";
+      card.innerHTML =
+        `<p class="summary-card__label">${label}</p>` +
+        `<p class="summary-card__value">${valueFn(values, result)}</p>`;
+      grid.appendChild(card);
+      body.appendChild(grid);
+    }
+
+    if (cfg.milestoneTable && result[cfg.milestoneTable.rowsKey]) {
+      const h = document.createElement("p");
+      h.className = "results-section-heading";
+      h.textContent = "Milestones";
+      body.appendChild(h);
+      body.appendChild(scheduleTableEl(cfg.milestoneTable.columns, result[cfg.milestoneTable.rowsKey]));
+    }
+
+    if (cfg.hasFullSchedule && cfg.scheduleColumns && result.schedule) {
+      const marginWrap = document.createElement("div");
+      marginWrap.style.marginTop = "16px";
+      scheduleWrap = scheduleTableEl(cfg.scheduleColumns, result.schedule);
+      marginWrap.appendChild(scheduleWrap);
+      body.appendChild(marginWrap);
+    }
+
+    container.appendChild(body);
+  }
+
+  return { renderEmpty, renderResults };
+})();
+</script>
+
+<script>
+// Wires the route sidebar to the form + results renderers.
+
+(function () {
+  const routeSidebar = document.getElementById("routeSidebar");
+  const inputPanel = document.getElementById("inputPanel");
+  const resultsPanel = document.getElementById("resultsPanel");
+
+  let activeRouteId = ROUTES[0].id;
+
+  function renderSidebar() {
+    routeSidebar.innerHTML = "";
+    ROUTES.forEach((route) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "route-sidebar__item" + (route.id === activeRouteId ? " is-active" : "");
+      btn.innerHTML =
+        `<span class="route-sidebar__item-title">${route.navTitle}</span>` +
+        `<span class="route-sidebar__item-sub">${route.navSubtitle}</span>`;
+      btn.addEventListener("click", () => selectRoute(route.id));
+      routeSidebar.appendChild(btn);
+    });
+  }
+
+  function selectRoute(routeId) {
+    activeRouteId = routeId;
+    renderSidebar();
+    const route = ROUTES.find((r) => r.id === routeId);
+    ResultsRenderer.renderEmpty(route, resultsPanel);
+    const formHandle = FormRenderer.render(route, inputPanel, (values) => {
+      const result = Calc.compute(route.id, values);
+      formHandle.allFieldConfigs().forEach((cfg) => {
+        if (cfg.autoFillFrom && result[cfg.autoFillFrom] != null) {
+          formHandle.setFieldValue(cfg.id, Number(result[cfg.autoFillFrom]).toFixed(2));
+        }
+      });
+      const refreshedValues = formHandle.getValues();
+      ResultsRenderer.renderResults(route, resultsPanel, refreshedValues, result);
+    });
+  }
+
+  renderSidebar();
+  selectRoute(activeRouteId);
+})();
+</script>
+</body>
+</html>
